@@ -7,7 +7,34 @@ from numpy import linalg as LA
 class Tools:
 
     @staticmethod
-    def get_neighbour_matrix(g):
+    def get_neighbour_matrix(g) -> List[List[float]]:
+        """
+        Creates a adjacency matrix for a specified graph: g, each row represents a node in the graph
+        where the values in each column represents if there is an edge or not between those nodes.
+
+        :param g: Networkx bi-directional graph object
+        :return A: List of rows, representing the adjacency matrix.
+        """
+        # Sort the nodes in the graph
+        s_nodes = list(g.nodes())
+        s_nodes.sort()
+        # Get the dimension of each row
+        dim = len(s_nodes)
+
+        mx = []
+        for node in g.nodes():
+            row = [0] * dim
+            # Get the index of the current node
+            node_index = s_nodes.index(node)
+            row[node_index] = 1
+            for neighbour in g.neighbors(node):
+                node_index = s_nodes.index(neighbour)
+                row[node_index] = 1
+            mx.append(row)
+        return mx
+
+    @staticmethod
+    def get_stochastic_neighbour_matrix(g):
         """
         Creates a stochastic adjacency matrix for a specified graph: g, each row represents a node in the graph
         where the values in each column represents if there is an edge or not between those nodes.
@@ -16,30 +43,22 @@ class Tools:
         :param g: Networkx bi-directional graph object
         :return A: List of rows, representing the adjacency matrix
         """
-        # Sort the nodes in the graph
-        s_nodes = list(g.nodes())
-        s_nodes.sort()
-        # Get the dimension of each row
-        dim = len(s_nodes)
+        # Get the neighbour matrix
+        mx = Tools.get_neighbour_matrix(g)
 
-        # Create an empty row
-        row = [0] * dim
-        A = []
-        for node in g.nodes():
-            row = [0] * dim
-            # Get the index of the current node
-            node_index = s_nodes.index(node)
-            row[node_index] = 1
-            # Get the number of neighbours
-            neighbour_count = 0
-            for neighbour in g.neighbors(node):
-                node_index = s_nodes.index(neighbour)
-                row[node_index] = 1
-                neighbour_count += 1
-            row_divide = float(neighbour_count + 1)
-            row = list(map(lambda x: x / row_divide, row))
-            A.append(row)
-        return A
+        # Iterate over each row
+        for row_id, _ in enumerate(mx):
+            # Calculate the sum for each row
+            row_sum = sum(mx[row_id])
+            # Divide each node in the row with the sum of the row
+            mx[row_id] = list(map(lambda x: (x / row_sum), mx[row_id]))
+
+        # Working solution that might however be worse than the previous solution.
+        # mx = list(map(lambda row: list(map(lambda cell: cell / sum(row), row)), mx))
+
+        return mx
+
+
 
     @staticmethod
     def get_eigenvalues(a):
@@ -83,7 +102,7 @@ class Tools:
         :return: The 2nd largest eigenvalue of the adjacency matrix
         :rtype: float
         """
-        A = Tools.get_neighbour_matrix(g)
+        A = Tools.get_stochastic_neighbour_matrix(g)
         ev = Tools.get_eigenvalues(A)
         return Tools.second_largest(ev)
 

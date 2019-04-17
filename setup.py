@@ -10,7 +10,7 @@ with open(path.join(here, 'README.md'), encoding='utf-8') as f:
     long_description = f.read()
 
 setup(name='extended_networkx_tools',
-      version='0.1.3.dev1',
+      version='0.1.5.dev1',
       description='Tools package for extending functionality of the networkx package.',
       long_description=long_description,
       long_description_content_type='text/markdown',
