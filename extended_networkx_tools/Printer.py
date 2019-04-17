@@ -18,8 +18,8 @@ class Printer:
 
         # Extracts the positions and stores them in the dict
         for node in nx_graph.nodes(data=True):  # type: tuple
-            if 'coordinates' in node[1]:
-                fixed_positions[node[0]] = node[1].get('coordinates')
+            if 'x' in node[1] and 'y' in node[1]:
+                fixed_positions[node[0]] = (node[1].get('x'), node[1].get('y'))
 
         # Get the indexes of the fixed positions
         fixed_nodes = fixed_positions.keys()
