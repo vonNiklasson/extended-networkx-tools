@@ -7,7 +7,7 @@ from random import randint
 class Creator:
 
     @staticmethod
-    def from_random(node_count):
+    def from_random(node_count: int) -> nx.Graph:
         area_dimension = node_count
         nxg: nx.Graph = nx.Graph()
 
@@ -26,7 +26,7 @@ class Creator:
         return nxg
 
     @staticmethod
-    def from_spec(v: Dict[int, Tuple[int, int]], e: Dict[int, List[int]]):
+    def from_spec(v: Dict[int, Tuple[int, int]], e: Dict[int, List[int]]) -> nx.Graph:
         """
 
         :param v:
@@ -46,7 +46,7 @@ class Creator:
         return nxg
 
     @staticmethod
-    def add_weighted_edge(nxg, start, destination):
+    def add_weighted_edge(nxg: nx.Graph, start: int, destination: int) -> bool:
 
         if nxg.has_edge(start, destination):
             return False
