@@ -1,4 +1,4 @@
-from typing import Dict, Any, Set, List, Tuple
+from typing import Dict, Set, List, Tuple
 
 import networkx as nx
 from random import randint
@@ -6,11 +6,8 @@ from random import randint
 
 class Creator:
 
-    def __init__(self):
-        pass
-
-    @classmethod
-    def from_random(cls, node_count):
+    @staticmethod
+    def from_random(node_count):
         area_dimension = node_count
         nxg: nx.Graph = nx.Graph()
 
@@ -28,8 +25,8 @@ class Creator:
 
         return nxg
 
-    @classmethod
-    def from_spec(cls, v: Dict[int, Tuple[int, int]], e: Dict[int, List[int]]):
+    @staticmethod
+    def from_spec(v: Dict[int, Tuple[int, int]], e: Dict[int, List[int]]):
         """
 
         :param v:
@@ -44,28 +41,28 @@ class Creator:
 
         for origin, destinations in e.items():
             for destination in destinations:
-                Creator.add_edge(nxg, origin, destination)
+                Creator.add_weighted_edge(nxg, origin, destination)
 
         return nxg
 
     @staticmethod
-    def add_edge(g, start, destination):
+    def add_weighted_edge(nxg, start, destination):
 
-        if g.has_edge(start, destination):
+        if nxg.has_edge(start, destination):
             return False
 
         # Find start and end coordinates
-        start_coord = (g.node[start]['x'], g.node[start]['y'])
-        destination_coord = (g.node[destination]['x'], g.node[destination]['y'])
+        start_coord = (nxg.node[start]['x'], nxg.node[start]['y'])
+        destination_coord = (nxg.node[destination]['x'], nxg.node[destination]['y'])
 
         # Subtract the coordinate values of the two points
         delta = tuple(map(lambda n: pow(n[0] - n[1], 2), zip(start_coord, destination_coord)))
         # Extract values from delta tuple
-        deltax, deltay = delta
+        delta_x, delta_y = delta
         # Cost is the summation of the difference in x and y of the two coordinates
-        weight = deltax + deltay
+        weight = delta_x + delta_y
 
         # Add edge to graph with its corresponding weight
-        g.add_edge(start, destination, weight=weight)
+        nxg.add_edge(start, destination, weight=weight)
 
         return True

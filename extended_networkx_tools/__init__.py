@@ -1,3 +1,3 @@
 from .Creator import Creator
-from .Printer import Printer
-from .Tools import Tools
+from .Visual import Visual
+from .Analytics import Analytics

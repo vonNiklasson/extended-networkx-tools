@@ -10,15 +10,16 @@ with open(path.join(here, 'README.md'), encoding='utf-8') as f:
     long_description = f.read()
 
 setup(name='extended_networkx_tools',
-      version='0.1.5.dev1',
+      version='0.3.0.dev1',
       description='Tools package for extending functionality of the networkx package.',
+      keywords='graph distributed average consensus convergence rate',
       long_description=long_description,
       long_description_content_type='text/markdown',
       url='https://github.com/vonNiklasson/extended-networkx-tools',
       author='Johan Niklasson, Oskar Hahr',
       author_email='jnikl@kth.se, ohahr@kth.se',
       license='MIT',
-      packages=find_packages(exclude=[]),
+      packages=find_packages(exclude=['twine']),
       install_requires=[
             'cycler',
             'decorator',
@@ -28,8 +29,8 @@ setup(name='extended_networkx_tools',
             'numpy',
             'pyparsing',
             'python-dateutil',
-            'six',
       ],
+      py_modules=['six'],
       python_requires='~=3.0',
       zip_safe=False,
       classifiers=[

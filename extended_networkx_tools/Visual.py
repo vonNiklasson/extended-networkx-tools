@@ -2,7 +2,7 @@ import networkx as nx
 import matplotlib.pyplot as plt
 
 
-class Printer:
+class Visual:
 
     @staticmethod
     def draw(nx_graph):
