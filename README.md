@@ -36,7 +36,7 @@ Is used to print a networkx graph to the screen, with its edges.
 
 **Example output**:
 
-![Example graph][examplegraph]
+[Example graph][examplegraph]
 
 [examplegraph]: docs/source/_static/example-graph.png "Example graph"
 
