@@ -3,8 +3,7 @@ Python Package for for visualizing and converting networkx graphs.
 
 ## Introduction
 
-This package was created for the purpose of examining 
-bidirectional graphs with the 
+This package was created for the purpose of examining bidirectional graphs with respect to its convergence rate and edge costs.
 
 ## Installation
 
