@@ -3,6 +3,9 @@ from .Creator import Creator
 
 
 class Solver:
+    """
+    Class to add edges to given networkx grahps taken from simple Graph Theory, such as path and cycle.
+    """
 
     @staticmethod
     def path(nxg: networkx.Graph) -> networkx.Graph:
@@ -11,8 +14,8 @@ class Solver:
         (0, 1), (1, 2), ... (n-1, n)
 
         :rtype: networkx.Graph
-        :param nxg:
-        :return:
+        :param nxg: A graph with nodes containing coordinates.
+        :return: A graph with connected nodes such as they form a path.
         """
         nodes = list(nxg.nodes())
 
@@ -29,8 +32,8 @@ class Solver:
         (0, 1), (1, 2), ... (n-1, n), (n, 0)
 
         :rtype: networkx.Graph
-        :param nxg:
-        :return:
+        :param nxg: A graph with nodes containing coordinates.
+        :return: A graph with connected nodes such as they form a cycle.
         """
         # Initially get the path of the graph
         nxg = Solver.path(nxg)
