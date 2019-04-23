@@ -1,5 +1,8 @@
 import networkx
-from .Creator import Creator
+try:
+    from Creator import Creator
+except Exception as e:
+    from .Creator import Creator
 
 
 class Solver:

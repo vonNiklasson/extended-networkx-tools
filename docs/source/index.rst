@@ -16,10 +16,10 @@ Welcome to extended-networkx-tools's documentation!
 .. automodule:: Creator
    :members:
 
-.. automodule:: Visual
+.. automodule:: Solver
    :members:
 
-.. automodule:: Solver
+.. automodule:: Visual
    :members:
 
 
