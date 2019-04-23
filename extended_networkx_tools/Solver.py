@@ -1,12 +1,19 @@
-import networkx as nx
-
-from Creator import Creator
+import networkx
+from .Creator import Creator
 
 
 class Solver:
 
     @staticmethod
-    def path(nxg: nx.Graph):
+    def path(nxg: networkx.Graph) -> networkx.Graph:
+        """
+        Adds edges to a given graph as a path, such as the following:
+        (0, 1), (1, 2), ... (n-1, n)
+
+        :rtype: networkx.Graph
+        :param nxg:
+        :return:
+        """
         nodes = list(nxg.nodes())
 
         for edge in zip(nodes[:-1], nodes[1:]):
@@ -16,7 +23,15 @@ class Solver:
         return nxg
 
     @staticmethod
-    def cycle(nxg: nx.Graph):
+    def cycle(nxg: networkx.Graph) -> networkx.Graph:
+        """
+        Adds edges to a given graph as a path, such as the following:
+        (0, 1), (1, 2), ... (n-1, n), (n, 0)
+
+        :rtype: networkx.Graph
+        :param nxg:
+        :return:
+        """
         # Initially get the path of the graph
         nxg = Solver.path(nxg)
 
