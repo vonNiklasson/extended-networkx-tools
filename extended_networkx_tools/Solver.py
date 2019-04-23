@@ -1,7 +1,7 @@
 import networkx
 try:
     from Creator import Creator
-except Exception as e:
+except ImportError:
     from .Creator import Creator
 
 
