@@ -30,13 +30,18 @@ coordinates of nodes and the edges between them.
 Has tools for analysing the networkx object and extract useful information from it, such 
 as convergence rate, neighbour matrix, its eigenvalues.
 
+### Solver
+
+Used to find simple greedy solutions to a connected graph taken from graph theory. The current approaches are:
+
+- **Path**: Adds edges as a path from the start to end node
+- **Cycle**: Adds edges just like the path, but also one edge from the start to end node.
+
 ### Visual
 
 Is used to print a networkx graph to the screen, with its edges.
 
-**Example output**:
-
-[Example graph][examplegraph]
+[Example output graph][examplegraph]
 
 [examplegraph]: docs/source/_static/example-graph.png "Example graph"
 
@@ -48,6 +53,6 @@ Is used to print a networkx graph to the screen, with its edges.
 
 
 ```python
-from extended_networkx_tools import Creator, Analytics, Visual
+from extended_networkx_tools import Creator, Analytics, Visual, Solver
 ```
 
