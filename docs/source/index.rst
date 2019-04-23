@@ -19,6 +19,9 @@ Welcome to extended-networkx-tools's documentation!
 .. automodule:: Visual
    :members:
 
+.. automodule:: Solver
+   :members:
+
 
 Indices and tables
 ==================
