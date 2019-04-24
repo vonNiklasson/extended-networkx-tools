@@ -147,7 +147,6 @@ class Analytics:
         # Get a list of all paths
         paths = list(nx.networkx.all_pairs_shortest_path_length(nxg))
         # Create an empty dict of distance distributions
-        print(paths)
         distributions = {}
         # Iterate over each path
         for origin, path in paths:
