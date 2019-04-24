@@ -135,15 +135,13 @@ class Analytics:
     @staticmethod
     def get_distance_distribution(nxg: nx.Graph) -> Dict[int, int]:
         """
-        Makes a list representing the distribution of shortest paths between every node
+        Makes a list representing the distribution of longest shortest paths between every node
         in the graph.
 
         :rtype: Dict[int, int]
         :param nxg: A given graph with edges.
-        :return: A dict with a distribution of the shortest paths between nodes.
+        :return: A dict with a distribution of the longest shortest paths between nodes.
         """
-        # Get the number of nodes in the graph
-        node_count = len(nxg.nodes())
         # Get a list of all paths
         paths = list(nx.networkx.all_pairs_shortest_path_length(nxg))
         # Create an empty dict of distance distributions
@@ -151,15 +149,16 @@ class Analytics:
         # Iterate over each path
         for origin, path in paths:
             # Make sure we don't check the same path twice
-            for dest in range(origin + 1, node_count):
+            max_node_distance = -1
+            for dest in range(0, len(path)):
                 # Get the actual shortest distance between 2 nodes
-                distance = path.get(dest)
+                max_node_distance = max(max_node_distance, path.get(dest))
                 # Make sure we create the distance first, then add one to it
-                if distance is not None:
-                    if distance not in distributions:
-                        distributions[distance] = 1
-                    else:
-                        distributions[distance] += 1
+            if max_node_distance is not -1:
+                if max_node_distance not in distributions:
+                    distributions[max_node_distance] = 1
+                else:
+                    distributions[max_node_distance] += 1
 
         return distributions
 
