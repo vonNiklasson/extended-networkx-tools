@@ -127,8 +127,8 @@ class Analytics:
         edges = nxg.edges(data=True)
 
         for edge in edges:
-            if 'weight' in edge:
-                total += edge['weight']
+            if 'weight' in edge[2]:
+                total += edge[2]['weight']
             
         return total
 
