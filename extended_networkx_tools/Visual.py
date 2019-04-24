@@ -3,6 +3,9 @@ import matplotlib.pyplot as plt
 
 
 class Visual:
+    """
+    Static class that only helps in visualising graph information.
+    """
 
     @staticmethod
     def draw(nx_graph):

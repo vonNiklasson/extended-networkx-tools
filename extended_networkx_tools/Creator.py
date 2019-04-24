@@ -5,6 +5,11 @@ from random import randint
 
 
 class Creator:
+    """
+    Static class that works with creating graph objects from given specifications.
+    Can either create a random unassigned graph with given nodes or a graph with
+    edges from given parameters.
+    """
 
     @staticmethod
     def from_random(node_count: int) -> networkx.Graph:
