@@ -34,8 +34,9 @@ as convergence rate, neighbour matrix, its eigenvalues.
 
 Used to find simple greedy solutions to a connected graph taken from graph theory. The current approaches are:
 
-- **Path**: Adds edges as a path from the start to end node
-- **Cycle**: Adds edges just like the path, but also one edge from the start to end node.
+- ``path``: Adds edges as a path from the start to end node
+- ``cycle``: Adds edges just like the path, but also one edge from the start to end node.
+- ``complete``: Adds edges between all nodes to all the other nodes, such as the maximum distance between every node is one.
 
 ### Visual
 

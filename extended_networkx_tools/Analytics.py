@@ -1,3 +1,4 @@
+import queue
 from typing import List, Dict
 
 import networkx as nx
@@ -159,3 +160,41 @@ class Analytics:
                         distributions[distance] += 1
 
         return distributions
+
+    @staticmethod
+    def is_nodes_connected(nxg: nx.Graph, origin: int, destination: int) -> bool:
+        """
+        Checks if two nodes are connected with each other using a BFS approach.
+
+        :param nxg: The grapg that contains the two nodes.
+        :param origin: The origin node id to check from.
+        :param destination: The destination node to check the connectivity to.
+        :return: True if there's a connection between the nodes, otherwise False.
+        """
+        # Create a set of seen nodes
+        seen = set()
+        # Create a queue
+        q = queue.Queue()
+
+        # Add the start node
+        q.put(origin)
+
+        # Iterate while the queue is not empty
+        while not q.empty():
+            # Get the first element of the queue
+            node_id = q.get()
+            # If we're at the destination, return True
+            if node_id == destination:
+                return True
+
+            # Otherwise, add the node to seen
+            seen.add(node_id)
+            # Iterate over the neighbours, but discard the first element
+            # since it should be the origin
+            for _, neighbour in nxg.edges(node_id):
+                # If we haven't seen it, add it to the queue
+                if neighbour not in seen:
+                    q.put(neighbour)
+
+        # If we've reached here we haven't found the other node. If so, return False
+        return False
