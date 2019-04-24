@@ -142,14 +142,17 @@ class Analytics:
         :param nxg: A given graph with edges.
         :return: A dict with a distribution of the shortest paths between nodes.
         """
+        # Get the number of nodes in the graph
+        node_count = len(nxg.nodes())
         # Get a list of all paths
         paths = list(nx.networkx.all_pairs_shortest_path_length(nxg))
         # Create an empty dict of distance distributions
+        print(paths)
         distributions = {}
         # Iterate over each path
         for origin, path in paths:
             # Make sure we don't check the same path twice
-            for dest in range(origin + 1, 3 + 1):
+            for dest in range(origin + 1, node_count):
                 # Get the actual shortest distance between 2 nodes
                 distance = path.get(dest)
                 # Make sure we create the distance first, then add one to it
