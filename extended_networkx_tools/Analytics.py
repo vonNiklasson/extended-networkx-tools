@@ -1,3 +1,4 @@
+import copy
 import queue
 from typing import List, Dict
 
@@ -5,6 +6,10 @@ import networkx as nx
 import numpy as np
 from numpy import linalg
 
+try:
+    from Solver import Solver
+except ImportError:
+    from .Solver import Solver
 
 class Analytics:
 
@@ -131,6 +136,21 @@ class Analytics:
                 total += edge[2]['weight']
             
         return total
+
+    @staticmethod
+    def hypothetical_max_edge_cost(nxg: nx.Graph) -> float:
+        """
+        Calculates the hypothetical total edge cost if the graph were to be complete.
+
+        :rtype: float
+        :param nxg: The graph to calculate the hypothetical edge cost of.
+        :return: The total edge cost if the graph were complete.
+        """
+        complete_graph = copy.deepcopy(nxg)
+        complete_graph = Solver.complete(complete_graph)
+        total_edge_cost = Analytics.total_edge_cost(complete_graph)
+        del complete_graph
+        return total_edge_cost
 
     @staticmethod
     def get_distance_distribution(nxg: nx.Graph) -> Dict[int, int]:
