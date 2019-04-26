@@ -223,7 +223,6 @@ class Analytics:
 
         # Iterate over the eccentricities
         for nid, eccentricity in eccentricities.items():
-            print(str(nid) + ":" + str(eccentricity))
             # Make sure an occurrence if the eccentricity exists in the distribution dict
             if eccentricity not in distributions:
                 distributions[eccentricity] = 0
