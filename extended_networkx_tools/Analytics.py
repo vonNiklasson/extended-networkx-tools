@@ -1,6 +1,7 @@
 import copy
 import queue
 from typing import List, Dict
+import warnings
 
 import networkx as nx
 import numpy as np
@@ -119,6 +120,26 @@ class Analytics:
         return Analytics.second_largest(ev)
 
     @staticmethod
+    def convergence_rate2(nxg: nx.Graph) -> float:
+        """
+        Function to retrieve convergence rate based on an alternate approach.
+
+        :param nxg: networkx bi-directional graph object
+        :type nxg: nx.Graph
+        :return: Alternate convergence rage
+        :rtype: float
+        """
+        A = Analytics.get_stochastic_neighbour_matrix(nxg)
+        ev = Analytics.get_eigenvalues(A)
+        largest = max(ev)
+        smallest = min(ev)
+        second_largest = Analytics.second_largest(ev)
+        return max(
+            largest - abs(second_largest),
+            largest - abs(smallest)
+        )
+
+    @staticmethod
     def total_edge_cost(nxg: nx.Graph) -> float:
         """
         Calculates the total cost of all edges in the given graph
@@ -162,6 +183,9 @@ class Analytics:
         :param nxg: A given graph with edges.
         :return: A dict with a distribution of the longest shortest paths between nodes.
         """
+        warnings.warn("Function depreciated, please use get_eccentricity_distribution(nxg) instead",
+                      DeprecationWarning)
+
         # Get a list of all paths
         paths = list(nx.networkx.all_pairs_shortest_path_length(nxg))
         # Create an empty dict of distance distributions
@@ -179,6 +203,33 @@ class Analytics:
                     distributions[max_node_distance] = 1
                 else:
                     distributions[max_node_distance] += 1
+
+        return distributions
+
+    @staticmethod
+    def get_eccentricity_distribution(nxg: nx.Graph) -> Dict[int, int]:
+        """
+        Makes a list representing the distribution of longest shortest paths between every node
+        in the graph.
+
+        :rtype: Dict[int, int]
+        :param nxg: A given graph with edges.
+        :return: A dict with a distribution of the longest shortest paths between nodes.
+        """
+        # Get the eccentricity of the graph
+        eccentricities = nx.eccentricity(nxg)
+        # Create a distribution dictionary
+        distributions = {}
+
+        # Iterate over the eccentricities
+        for nid, eccentricity in eccentricities.items():
+            print(str(nid) + ":" + str(eccentricity))
+            # Make sure an occurrence if the eccentricity exists in the distribution dict
+            if eccentricity not in distributions:
+                distributions[eccentricity] = 0
+
+            # Add one to the eccentricity distribution
+            distributions[eccentricity] += 1
 
         return distributions
 
