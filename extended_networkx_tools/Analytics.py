@@ -1,6 +1,6 @@
 import copy
 import queue
-from typing import List, Dict
+from typing import List, Dict, Tuple
 import warnings
 
 import networkx as nx
@@ -269,3 +269,35 @@ class Analytics:
 
         # If we've reached here we haven't found the other node. If so, return False
         return False
+
+    @staticmethod
+    def get_node_dict(nxg: nx.Graph) -> Dict[int, Tuple[int, int]]:
+        """
+        Converts a networkx object to a dict with nodes and their positions.
+        Can be used to recreate a new graph with Creator.from_dict().
+
+        :rtype: Dict[int, Tuple[int, int]]
+        :param nxg: The graph to get the nodes from.
+        :return: A dict of nodes with their corresponding positions.
+        """
+        nodes = {}
+        for node in nxg.nodes(data=True):
+            nodes[node[0]] = (node[1]['x'], node[1]['y'])
+        return nodes
+
+    @staticmethod
+    def get_edge_dict(nxg: nx.Graph) -> Dict[int, List[int]]:
+        """
+        Converts a networkx object to a dict with edges and their neighbours.
+        Can be used to recreate a new graph with Creator.from_dict().
+
+        :rtype: Dict[int, List[int]]
+        :param nxg: The graph to get the edges from.
+        :return: A neighbour list for all nodes.
+        """
+        edges = {}
+        for origin, dest in nxg.edges():
+            if origin not in edges:
+                edges[origin] = []
+            edges[origin].append(dest)
+        return edges
