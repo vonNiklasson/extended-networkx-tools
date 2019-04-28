@@ -301,3 +301,20 @@ class Analytics:
                 edges[origin] = []
             edges[origin].append(dest)
         return edges
+
+    @staticmethod
+    def get_average_eccentricity(nxg: nx.Graph) -> float:
+        """
+        Calculates the average eccentricity from the given graph.
+
+        :rtype: float
+        :param nxg: The graph to get the average eccentricity from.
+        :return: The average eccentricty from the graph.
+        """
+        distribution = Analytics.get_eccentricity_distribution(nxg)
+        occurrence = 0
+        count = 0
+        for d, c in distribution.items():
+            occurrence += d*c
+            count += c
+        return occurrence/count
