@@ -12,16 +12,19 @@ try:
 except ImportError:
     from .Solver import Solver
 
+
 class Analytics:
 
     @staticmethod
-    def get_neighbour_matrix(nxg: nx.Graph) -> List[List[float]]:
+    def get_adjacency_matrix(nxg: nx.Graph, self_assignment=False) -> List[List[float]]:
         """
         Creates a neighbour matrix for a specified graph: g, each row represents a node in the graph
         where the values in each column represents if there is an edge or not between those nodes.
 
         :param nxg: networkx bi-directional graph object.
         :type nxg: nx.Graph
+        :param self_assignment: Whether or not to use self assignment in the graph. Used for convergence rate.
+        :type nxg: bool
         :return A: List of rows, representing the adjacency matrix.
         :rtype: List[List[float]]
         """
@@ -36,7 +39,8 @@ class Analytics:
             row = [0] * dim
             # Get the index of the current node
             node_index = s_nodes.index(node)
-            row[node_index] = 1
+            if self_assignment:
+                row[node_index] = 1
             for neighbour in nxg.neighbors(node):
                 node_index = s_nodes.index(neighbour)
                 row[node_index] = 1
@@ -56,7 +60,7 @@ class Analytics:
         :rtype: List[List[float]]
         """
         # Get the neighbour matrix
-        mx = Analytics.get_neighbour_matrix(nxg)
+        mx = Analytics.get_adjacency_matrix(nxg, True)
 
         # Iterate over each row
         for row_id, _ in enumerate(mx):
