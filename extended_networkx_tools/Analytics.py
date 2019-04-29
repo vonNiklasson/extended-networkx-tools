@@ -139,16 +139,28 @@ class Analytics:
         return m2 if count >= 2 else None
 
     @staticmethod
-    def convergence_rate(nxg: nx.Graph) -> float:
+    def convergence_rate(nxg: nx.Graph = None, stochastic_neighbour_matrix: List[List[float]] = None) -> float:
         """
         Function to retrieve the 2nd largest eigenvalue in the adjacency matrix of a graph
 
         :param nxg: networkx bi-directional graph object
         :type nxg: nx.Graph
+        :param stochastic_neighbour_matrix: The stochastic neighbour matrix of the given graph.
+        :type stochastic_neighbour_matrix: List[List[float]]
         :return: The 2nd largest eigenvalue of the adjacency matrix
         :rtype: float
         """
-        A = Analytics.get_stochastic_neighbour_matrix(nxg)
+        if nxg is None and stochastic_neighbour_matrix is None:
+            raise ValueError('At least one parameter of nxg or stochastic_neighbour_matrix needs to be provided')
+
+
+        # If we wasn't provided with the adjacency matrix, get it.
+        if stochastic_neighbour_matrix is None:
+            # Get the adjacency matrix
+            A = Analytics.get_stochastic_neighbour_matrix(nxg)
+        else:
+            A = stochastic_neighbour_matrix
+
         ev = Analytics.get_eigenvalues(A)
         return Analytics.second_largest(ev)
 
