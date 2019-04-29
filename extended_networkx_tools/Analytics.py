@@ -16,7 +16,7 @@ except ImportError:
 class Analytics:
 
     @staticmethod
-    def get_adjacency_matrix(nxg: nx.Graph, self_assignment=False) -> List[List[float]]:
+    def get_adjacency_matrix(nxg: nx.Graph, self_assignment=False) -> List[List[int]]:
         """
         Creates a neighbour matrix for a specified graph: g, each row represents a node in the graph
         where the values in each column represents if there is an edge or not between those nodes.
