@@ -48,7 +48,7 @@ class Analytics:
         return mx
 
     @staticmethod
-    def get_stochastic_neighbour_matrix(nxg: nx.Graph) -> List[List[float]]:
+    def get_stochastic_neighbour_matrix(nxg: nx.Graph = None, adjacency_matrix: List[List[int]] = None) -> List[List[float]]:
         """
         Creates a stochastic adjacency matrix for a specified graph: g, each row represents a node in the graph
         where the values in each column represents if there is an edge or not between those nodes.
@@ -56,11 +56,20 @@ class Analytics:
 
         :param nxg: Networkx bi-directional graph object.
         :type nxg: nx.Graph
+        :param adjacency_matrix: Self assigned adjacency matrix.
+        :type adjacency_matrix: List[List[int]]
         :return A: List of rows, representing the adjacency matrix.
         :rtype: List[List[float]]
         """
-        # Get the neighbour matrix
-        mx = Analytics.get_adjacency_matrix(nxg, True)
+        if nxg is None and adjacency_matrix is None:
+            raise ValueError('At least one parameter of nxg or adjacency_matrix needs to be provided')
+
+        # If we wasn't provided with the adjacency matrix, get it.
+        if adjacency_matrix is None:
+            # Get the adjacency matrix
+            mx = Analytics.get_adjacency_matrix(nxg, True)
+        else:
+            mx = adjacency_matrix
 
         # Iterate over each row
         for row_id, _ in enumerate(mx):
