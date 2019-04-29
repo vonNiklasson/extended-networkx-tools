@@ -342,3 +342,20 @@ class Analytics:
             occurrence += d*c
             count += c
         return occurrence/count
+
+    @staticmethod
+    def get_degree_matrix(nxg: nx.Graph) -> List[List[int]]:
+        # Sort the nodes in the graph
+        s_nodes = list(nxg.nodes())
+        s_nodes.sort()
+        # Get the dimension of each row
+        dim = len(s_nodes)
+
+        mx = []
+        for node in nxg.nodes():
+            row = [0] * dim
+            # Get the index of the current node
+            node_index = s_nodes.index(node)
+            row[node_index] = nx.degree(nxg, node_index)
+            mx.append(row)
+        return mx
