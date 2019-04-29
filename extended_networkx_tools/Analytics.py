@@ -110,6 +110,26 @@ class Analytics:
         return m2 if count >= 2 else None
 
     @staticmethod
+    def second_smallest(numbers: List[float]) -> float:
+        """
+        Simple function to return the 2nd smallest number in a list of numbers.
+
+        :param numbers: A list of numbers
+        :return: The 2nd smallest number in the list numbers
+        :rtype: float
+        """
+        count = 0
+        m1 = m2 = float('inf')
+        for x in numbers:
+            count += 1
+            if x < m2:
+                if x <= m1:
+                    m1, m2 = x, m1
+                else:
+                    m2 = x
+        return m2 if count >= 2 else None
+
+    @staticmethod
     def convergence_rate(nxg: nx.Graph) -> float:
         """
         Function to retrieve the 2nd largest eigenvalue in the adjacency matrix of a graph
