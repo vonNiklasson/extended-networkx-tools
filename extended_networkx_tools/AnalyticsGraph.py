@@ -32,6 +32,9 @@ class AnalyticsGraph:
     _is_connected_dirty: bool
     _old_is_connected_dirty: bool
 
+    _edge_cost: int
+    _old_edge_cost: int
+
     _dimension: int
 
     def __init__(self, nxg: nx.Graph):
@@ -50,6 +53,9 @@ class AnalyticsGraph:
         self._old_is_connected = None
         self._is_connected_dirty = True
         self._old_is_connected_dirty = True
+
+        self._edge_cost = Analytics.total_edge_cost(self._graph)
+        self._old_edge_cost = self._edge_cost
 
     def graph(self) -> nx.Graph:
         """
@@ -81,6 +87,14 @@ class AnalyticsGraph:
             self._is_connected_dirty = False
         return self._is_connected
 
+    def get_edge_cost(self) -> float:
+        """
+        Calculates the edge cost for the current graph.
+
+        :return:
+        """
+        return self._edge_cost
+
     def add_edge(self, origin, destination):
         if self.has_edge(origin, destination):
             return False
@@ -89,8 +103,10 @@ class AnalyticsGraph:
         self._stage_graph(origin, destination, False)
         self._stage_is_connected()
         self._stage_convergence_rate()
+        self._stage_edge_cost()
 
         Creator.add_weighted_edge(self._graph, origin, destination, ignore_validity=True)
+        self._edge_cost += self._graph[origin][destination]['weight']
         self._set_adjacency_matrix_sa(origin, destination, 1)
         self._laplacian_added_edge(origin, destination)
 
@@ -107,6 +123,9 @@ class AnalyticsGraph:
         self._stage_graph(origin, destination, True)
         self._stage_is_connected()
         self._stage_convergence_rate()
+        self._stage_edge_cost()
+
+        self._edge_cost -= self._graph[origin][destination]['weight']
 
         self._graph.remove_edge(origin, destination)
         self._set_adjacency_matrix_sa(origin, destination, 0)
@@ -128,14 +147,17 @@ class AnalyticsGraph:
         self._stage_graph(origin, new_destination, False)
         self._stage_is_connected()
         self._stage_convergence_rate()
+        self._stage_edge_cost()
 
         # Remove the old edge from the graph
+        self._edge_cost -= self._graph[origin][old_destination]['weight']
         self._graph.remove_edge(origin, old_destination)
         self._set_adjacency_matrix_sa(origin, old_destination, 0)
         self._laplacian_removed_edge(origin, old_destination)
 
         # Add the new edge to the graph
         Creator.add_weighted_edge(self._graph, origin, new_destination, ignore_validity=True)
+        self._edge_cost += self._graph[origin][new_destination]['weight']
         self._set_adjacency_matrix_sa(origin, new_destination, 1)
         self._laplacian_added_edge(origin, new_destination)
 
@@ -238,6 +260,9 @@ class AnalyticsGraph:
         self._old_is_connected = self._is_connected
         self._old_is_connected_dirty = self._is_connected_dirty
 
+    def _stage_edge_cost(self):
+        self._old_edge_cost = self._edge_cost
+
     def revert(self):
         # Revert the graph
         for action in self._old_graph:
@@ -261,6 +286,9 @@ class AnalyticsGraph:
         # Revert the is connected state
         self._is_connected = self._old_is_connected
         self._is_connected_dirty = self._old_is_connected_dirty
+
+        # Revert the edge cost
+        self._edge_cost = self._old_edge_cost
 
     def reset_stage_actions(self):
         self._old_laplacian_matrix = []

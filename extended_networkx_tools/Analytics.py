@@ -168,7 +168,7 @@ class Analytics:
             A = stochastic_neighbour_matrix
 
         ev = Analytics.get_eigenvalues(A)
-        return Analytics.second_largest(ev)
+        return Analytics.second_largest(ev).real
 
     @staticmethod
     def convergence_rate2(nxg: nx.Graph) -> float:
@@ -191,7 +191,7 @@ class Analytics:
         )
 
     @staticmethod
-    def total_edge_cost(nxg: nx.Graph) -> float:
+    def total_edge_cost(nxg: nx.Graph) -> int:
         """
         Calculates the total cost of all edges in the given graph
 
