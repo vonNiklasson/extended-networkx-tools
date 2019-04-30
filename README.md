@@ -46,7 +46,32 @@ Is used to print a networkx graph to the screen, with its edges.
 
 [examplegraph]: docs/source/_static/example-graph.png "Example graph"
 
+### AnalyticsGraph
 
+The `AnalyticsGraph` class is a helper class that serves the purpose of a wrapper object
+that can do all calculations based on changes done to the graph, rather
+than recalculating every metric after simple changes. Such as the connectivity state
+will stay the same after adding an edge.
+
+There is also options to revert changes and keep previous calculations.
+
+**Example usage**:
+
+```python
+from extended_networkx_tools import Creator, Solver, AnalyticsGraph
+
+# Create a random graph with a path
+g = Creator.from_random(10)
+g = Solver.path(g)
+
+# Convert the graph to an AnalytcsGraph object
+ag = AnalyticsGraph(g)
+
+convergence_rate = ag.get_convergence_rate() # Calcualtes the convergence rate from scratch
+ag.remove_edge(4, 5)    # Removes an edge
+ag.revert()             # Revert the changes
+convergence_rate = ag.get_convergence_rate() # Doesn't calculate it since it's saved from previous state
+```
 
 ## Usage
 
@@ -54,6 +79,6 @@ Is used to print a networkx graph to the screen, with its edges.
 
 
 ```python
-from extended_networkx_tools import Creator, Analytics, Visual, Solver
+from extended_networkx_tools import Creator, Analytics, Visual, Solver, AnalyticsGraph
 ```
 
