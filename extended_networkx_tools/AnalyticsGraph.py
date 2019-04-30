@@ -200,11 +200,11 @@ class AnalyticsGraph:
         """
         self._stage_laplacian(origin, destination)
 
-        self._laplacian_matrix[origin][destination] += 1
-        self._laplacian_matrix[destination][origin] += 1
+        self._laplacian_matrix[origin][destination] = -1
+        self._laplacian_matrix[destination][origin] = -1
 
-        self._laplacian_matrix[origin][origin] = -1
-        self._laplacian_matrix[destination][destination] = -1
+        self._laplacian_matrix[origin][origin] += 1
+        self._laplacian_matrix[destination][destination] += 1
 
     def _laplacian_removed_edge(self, origin, destination):
         """
@@ -215,11 +215,11 @@ class AnalyticsGraph:
         """
         self._stage_laplacian(origin, destination)
 
-        self._laplacian_matrix[origin][destination] -= 1
-        self._laplacian_matrix[destination][origin] -= 1
+        self._laplacian_matrix[origin][destination] = 0
+        self._laplacian_matrix[destination][origin] = 0
 
-        self._laplacian_matrix[origin][origin] = 0
-        self._laplacian_matrix[destination][destination] = 0
+        self._laplacian_matrix[origin][origin] -= 1
+        self._laplacian_matrix[destination][destination] -= 1
 
     def _stage_laplacian(self, origin, destination):
         """

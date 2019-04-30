@@ -10,7 +10,7 @@ with open(path.join(here, 'README.md'), encoding='utf-8') as f:
     long_description = f.read()
 
 setup(name='extended_networkx_tools',
-      version='0.13.3.rc1',
+      version='0.13.4.rc1',
       description='Tools package for extending functionality of the networkx package.',
       keywords='graph, distributed average consensus, convergence rate, networkx',
       long_description=long_description,
