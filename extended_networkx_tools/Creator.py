@@ -62,7 +62,7 @@ class Creator:
         return nxg
 
     @staticmethod
-    def add_weighted_edge(nxg: networkx.Graph, origin: int, destination: int) -> bool:
+    def add_weighted_edge(nxg: networkx.Graph, origin: int, destination: int, ignore_validity: bool = False) -> bool:
         """
         Adds a bidirectional edge between 2 nodes with weight corresponding to the
         distance between the nodes squared.
@@ -70,10 +70,12 @@ class Creator:
         :param nxg: The graph to add an edge to.
         :param origin: First node id to add the edge from
         :param destination: Second node id to add the edge to.
+        :param ignore_validity: Whether to skip the validity check when adding the edge
         :return: True if the edge was added, otherwise false if the edge already existed.
         """
-        if nxg.has_edge(origin, destination):
-            return False
+        if ignore_validity is False:
+            if nxg.has_edge(origin, destination):
+                return False
 
         # Find start and end coordinates
         start_coord = (nxg.node[origin]['x'], nxg.node[origin]['y'])
