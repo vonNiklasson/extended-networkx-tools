@@ -90,7 +90,7 @@ class Analytics:
         return mx
 
     @staticmethod
-    def get_eigenvalues(a: List[List[float]]) -> List[float]:
+    def get_eigenvalues(mx: List[List[float]]) -> np.ndarray:
         """
         Simple function to retrieve the eigenvalues of a matrix.
 
@@ -98,10 +98,7 @@ class Analytics:
         :return: List of eigenvalues of the provided matrix.
         :rtype: List[float]
         """
-        
-        A = np.array(a)
-        w, _ = linalg.eig(A)
-        return w
+        return linalg.eigvals(mx)
 
     @staticmethod
     def second_largest(numbers: List[float]) -> float:

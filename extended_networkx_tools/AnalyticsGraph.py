@@ -1,4 +1,4 @@
-from typing import List, Tuple
+from typing import List, Tuple, Union
 
 from scipy.sparse.csr import csr_matrix
 import scipy
@@ -32,6 +32,9 @@ class AnalyticsGraph:
     _is_connected_dirty: bool
     _old_is_connected_dirty: bool
 
+    _connectivity_nodes: Tuple[int, int]
+    _old_connectivity_nodes: Union[Tuple[int, int], None]
+
     _edge_cost: int
     _old_edge_cost: int
 
@@ -54,6 +57,9 @@ class AnalyticsGraph:
         self._is_connected_dirty = True
         self._old_is_connected_dirty = True
 
+        self._connectivity_nodes = None
+        self._old_connectivity_nodes = None
+
         self._edge_cost = Analytics.total_edge_cost(self._graph)
         self._old_edge_cost = self._edge_cost
 
@@ -72,7 +78,14 @@ class AnalyticsGraph:
         :return:
         """
         if self._convergence_rate_dirty:
-            self._convergence_rate = Analytics.convergence_rate(self._graph)
+            # Convert the stochastic neighbour matrix to a stochastic one
+            stochastic_neighbour_matrix = Analytics.get_stochastic_neighbour_matrix(
+                adjacency_matrix=self._adjacency_matrix_sa
+            )
+            # Get the convergence rate
+            self._convergence_rate = Analytics.convergence_rate(
+                stochastic_neighbour_matrix=stochastic_neighbour_matrix
+            )
             self._convergence_rate_dirty = False
         return self._convergence_rate
 
@@ -83,7 +96,14 @@ class AnalyticsGraph:
         :return:
         """
         if self._is_connected_dirty:
-            self._is_connected = Analytics.is_graph_connected(self._laplacian_matrix)
+            if self._connectivity_nodes is None:
+                self._is_connected = nx.is_connected(self._graph)
+            else:
+                self._is_connected = Analytics.is_nodes_connected(
+                    nxg=self._graph,
+                    origin=self._connectivity_nodes[0],
+                    destination=self._connectivity_nodes[1]
+                )
             self._is_connected_dirty = False
         return self._is_connected
 
@@ -133,6 +153,7 @@ class AnalyticsGraph:
 
         self._convergence_rate_dirty = True
         self._is_connected_dirty = True
+        self._connectivity_nodes = (origin, destination)
 
         return True
 
@@ -163,6 +184,7 @@ class AnalyticsGraph:
 
         self._convergence_rate_dirty = True
         self._is_connected_dirty = True
+        self._connectivity_nodes = (origin, new_destination)
 
         return True
 
@@ -259,6 +281,7 @@ class AnalyticsGraph:
     def _stage_is_connected(self):
         self._old_is_connected = self._is_connected
         self._old_is_connected_dirty = self._is_connected_dirty
+        self._old_connectivity_nodes = self._connectivity_nodes
 
     def _stage_edge_cost(self):
         self._old_edge_cost = self._edge_cost
@@ -286,6 +309,7 @@ class AnalyticsGraph:
         # Revert the is connected state
         self._is_connected = self._old_is_connected
         self._is_connected_dirty = self._old_is_connected_dirty
+        self._connectivity_nodes = self._old_connectivity_nodes
 
         # Revert the edge cost
         self._edge_cost = self._old_edge_cost
@@ -294,6 +318,7 @@ class AnalyticsGraph:
         self._old_laplacian_matrix = []
         self._old_adjacency_matrix_sa = []
         self._old_graph = []
+        self._old_connectivity_nodes = None
 
     def get_adjacency_matrix_sa(self):
         return self._adjacency_matrix_sa
