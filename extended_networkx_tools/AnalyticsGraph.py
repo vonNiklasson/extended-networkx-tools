@@ -152,6 +152,8 @@ class AnalyticsGraph:
         :param destination:
         :return:
         """
+        if origin == destination:
+            return False
         return self._adjacency_matrix_sa[origin][destination] == 1
 
     def _set_adjacency_matrix_sa(self, origin, destination, val):
