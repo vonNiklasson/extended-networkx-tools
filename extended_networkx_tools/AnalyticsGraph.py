@@ -32,10 +32,14 @@ class AnalyticsGraph:
     _is_connected_dirty: bool
     _old_is_connected_dirty: bool
 
+    _dimension: int
+
     def __init__(self, nxg: nx.Graph):
         self._graph = nxg
         self._adjacency_matrix_sa = Analytics.get_adjacency_matrix(self._graph, True)
         self._laplacian_matrix = Analytics.get_laplacian_matrix(self._graph)
+
+        self._dimension = len(self._adjacency_matrix_sa)
 
         self._convergence_rate = None
         self._old_convergence_rate = None
@@ -266,3 +270,6 @@ class AnalyticsGraph:
 
     def get_laplacian_matrix(self):
         return self._laplacian_matrix
+
+    def get_dimension(self):
+        return self._dimension
