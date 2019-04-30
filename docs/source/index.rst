@@ -22,6 +22,9 @@ Welcome to extended-networkx-tools's documentation!
 .. automodule:: Visual
    :members:
 
+.. automodule:: AnalyticsGraph
+   :members:
+
 
 Indices and tables
 ==================
