@@ -16,6 +16,12 @@ except ImportError:
 class Analytics:
 
     @staticmethod
+    def get_neighbour_matrix(nxg: nx.Graph):
+        warnings.warn("Function depreciated, please use get_adjacency_matrix(nxg, True) instead",
+                      DeprecationWarning)
+        return Analytics.get_adjacency_matrix(nxg, True)
+
+    @staticmethod
     def get_adjacency_matrix(nxg: nx.Graph, self_assignment=False) -> List[List[int]]:
         """
         Creates a neighbour matrix for a specified graph: g, each row represents a node in the graph
@@ -380,3 +386,41 @@ class Analytics:
             row[node_index] = nx.degree(nxg, node_index)
             mx.append(row)
         return mx
+
+    @staticmethod
+    def get_laplacian_matrix(nxg: nx.Graph) -> List[List[int]]:
+        """
+        Calculates the laplacian matrix based on a given graph.
+
+        :param nxg: The graph to get the laplacian matrix from.
+        :return: The laplacian matrix, such as L = D - A where
+                    D = Degree matrix and
+                    A = Adjacency matrix
+        """
+        laplacian_matrix = []
+        degree_matrix = Analytics.get_degree_matrix(nxg)
+        adjacency_matrix = Analytics.get_adjacency_matrix(nxg)
+
+        dimension = len(adjacency_matrix)
+
+        for r in range(0, dimension):
+            row = [0] * dimension
+            for c in range(0, dimension):
+                row[c] = degree_matrix[r][c] - adjacency_matrix[r][c]
+            laplacian_matrix.append(row)
+
+        return laplacian_matrix
+
+    @staticmethod
+    def is_graph_connected(laplacian_matrix: List[List[int]]):
+        """
+        Checks whether a given graph is connected based on its laplacian matrix.
+
+        :param laplacian_matrix: The laplacian matrix, representing the graph.
+        :return: Whether it's connected or not.
+        """
+        ev = Analytics.get_eigenvalues(laplacian_matrix)
+        second_smallest = Analytics.second_smallest(ev)
+
+        # Check if it's above a certain threshold due to floating point errors
+        return second_smallest > 1e-8
