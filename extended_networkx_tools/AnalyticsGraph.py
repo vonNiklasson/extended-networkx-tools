@@ -19,8 +19,8 @@ class AnalyticsGraph:
     _adjacency_matrix_sa: List[List[int]]
     _old_adjacency_matrix_sa: List[Tuple[int, int, int]]
 
-    _laplacian_matrix: List[List[int]]
-    _old_laplacian_matrix: List[Tuple[int, int, int]]
+    #_laplacian_matrix: List[List[int]]
+    #_old_laplacian_matrix: List[Tuple[int, int, int]]
 
     _convergence_rate: float
     _old_convergence_rate: float
@@ -43,7 +43,7 @@ class AnalyticsGraph:
     def __init__(self, nxg: nx.Graph):
         self._graph = nxg
         self._adjacency_matrix_sa = Analytics.get_adjacency_matrix(self._graph, True)
-        self._laplacian_matrix = Analytics.get_laplacian_matrix(self._graph)
+        #self._laplacian_matrix = Analytics.get_laplacian_matrix(self._graph)
 
         self._dimension = len(self._adjacency_matrix_sa)
 
@@ -128,7 +128,7 @@ class AnalyticsGraph:
         Creator.add_weighted_edge(self._graph, origin, destination, ignore_validity=True)
         self._edge_cost += self._graph[origin][destination]['weight']
         self._set_adjacency_matrix_sa(origin, destination, 1)
-        self._laplacian_added_edge(origin, destination)
+        #self._laplacian_added_edge(origin, destination)
 
         self._convergence_rate_dirty = True
         # Is connected won't be dirty in this case
@@ -149,7 +149,7 @@ class AnalyticsGraph:
 
         self._graph.remove_edge(origin, destination)
         self._set_adjacency_matrix_sa(origin, destination, 0)
-        self._laplacian_removed_edge(origin, destination)
+        #self._laplacian_removed_edge(origin, destination)
 
         self._convergence_rate_dirty = True
         self._is_connected_dirty = True
@@ -174,13 +174,13 @@ class AnalyticsGraph:
         self._edge_cost -= self._graph[origin][old_destination]['weight']
         self._graph.remove_edge(origin, old_destination)
         self._set_adjacency_matrix_sa(origin, old_destination, 0)
-        self._laplacian_removed_edge(origin, old_destination)
+        #self._laplacian_removed_edge(origin, old_destination)
 
         # Add the new edge to the graph
         Creator.add_weighted_edge(self._graph, origin, new_destination, ignore_validity=True)
         self._edge_cost += self._graph[origin][new_destination]['weight']
         self._set_adjacency_matrix_sa(origin, new_destination, 1)
-        self._laplacian_added_edge(origin, new_destination)
+        #self._laplacian_added_edge(origin, new_destination)
 
         self._convergence_rate_dirty = True
         self._is_connected_dirty = True
@@ -220,6 +220,7 @@ class AnalyticsGraph:
         :param origin:
         :param destination:
         """
+        raise NotImplementedError
         self._stage_laplacian(origin, destination)
 
         self._laplacian_matrix[origin][destination] = -1
@@ -235,6 +236,7 @@ class AnalyticsGraph:
         :param origin:
         :param destination:
         """
+        raise NotImplementedError
         self._stage_laplacian(origin, destination)
 
         self._laplacian_matrix[origin][destination] = 0
@@ -295,8 +297,8 @@ class AnalyticsGraph:
                 self._graph.remove_edge(action[0], action[1])
 
         # Revert the laplacian matrix
-        for action in self._old_laplacian_matrix:
-            self._laplacian_matrix[action[0]][action[1]] = action[2]
+        #for action in self._old_laplacian_matrix:
+        #    self._laplacian_matrix[action[0]][action[1]] = action[2]
 
         # Revert the adjacency matrix
         for action in self._old_adjacency_matrix_sa:
@@ -315,7 +317,7 @@ class AnalyticsGraph:
         self._edge_cost = self._old_edge_cost
 
     def reset_stage_actions(self):
-        self._old_laplacian_matrix = []
+        #self._old_laplacian_matrix = []
         self._old_adjacency_matrix_sa = []
         self._old_graph = []
         self._old_connectivity_nodes = None
@@ -324,6 +326,7 @@ class AnalyticsGraph:
         return self._adjacency_matrix_sa
 
     def get_laplacian_matrix(self):
+        raise NotImplementedError
         return self._laplacian_matrix
 
     def get_dimension(self):
