@@ -94,22 +94,26 @@ class Analytics:
         """
         Simple function to retrieve the eigenvalues of a matrix.
 
-        :param a: A matrix made up of nested lists.
+        :param mx: A matrix made up of nested lists.
         :return: List of eigenvalues of the provided matrix.
         :rtype: List[float]
         """
-        return linalg.eigvals(mx)
+        return linalg.eigvalsh(mx)
 
     @staticmethod
-    def second_largest(numbers: List[float]) -> float:
+    def second_largest(numbers: List[float], sorted: bool = False) -> float:
         """
         Simple function to return the 2nd largest number in a list of numbers.
 
         :param numbers: A list of numbers
+        :param sorted: If the list is sorted or not
         :return: The 2nd largest number in the list numbers
         :rtype: float
 
         """
+        if sorted:
+            return numbers[len(numbers)-2:len(numbers)-1][0]
+
         count = 0
         m1 = m2 = float('-inf')
         for x in numbers:
@@ -122,14 +126,18 @@ class Analytics:
         return m2 if count >= 2 else None
 
     @staticmethod
-    def second_smallest(numbers: List[float]) -> float:
+    def second_smallest(numbers: List[float], sorted: bool = False) -> float:
         """
         Simple function to return the 2nd smallest number in a list of numbers.
 
         :param numbers: A list of numbers
+        :param sorted: If the list is sorted or not
         :return: The 2nd smallest number in the list numbers
         :rtype: float
         """
+        if sorted:
+            return numbers[1:2][0]
+
         count = 0
         m1 = m2 = float('inf')
         for x in numbers:
@@ -155,7 +163,6 @@ class Analytics:
         """
         if nxg is None and stochastic_neighbour_matrix is None:
             raise ValueError('At least one parameter of nxg or stochastic_neighbour_matrix needs to be provided')
-
 
         # If we wasn't provided with the adjacency matrix, get it.
         if stochastic_neighbour_matrix is None:
@@ -417,7 +424,7 @@ class Analytics:
         :return: Whether it's connected or not.
         """
         ev = Analytics.get_eigenvalues(laplacian_matrix)
-        second_smallest = Analytics.second_smallest(ev)
+        second_smallest = Analytics.second_smallest(ev).real
 
         # Check if it's above a certain threshold due to floating point errors
         return second_smallest > 1e-8
