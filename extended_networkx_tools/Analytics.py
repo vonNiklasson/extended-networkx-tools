@@ -112,7 +112,10 @@ class Analytics:
 
         """
         if sorted_list:
-            return numbers[len(numbers)-2]
+            largest = numbers[len(numbers)-1]
+            for i in range(len(numbers)-1, -1, -1):
+                if i < largest - 1e-8:
+                    return i
 
         count = 0
         m1 = m2 = float('-inf')
@@ -136,7 +139,10 @@ class Analytics:
         :rtype: float
         """
         if sorted_list:
-            return numbers[1]
+            smallest = numbers[0]
+            for i in range(0, len(numbers)):
+                if smallest < i + 1e-8:
+                    return i
 
         count = 0
         m1 = m2 = float('inf')
