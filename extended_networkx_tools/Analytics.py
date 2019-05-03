@@ -101,18 +101,18 @@ class Analytics:
         return linalg.eigvalsh(mx)
 
     @staticmethod
-    def second_largest(numbers: List[float], sorted: bool = False) -> float:
+    def second_largest(numbers: List[float], sorted_list: bool = False) -> float:
         """
         Simple function to return the 2nd largest number in a list of numbers.
 
         :param numbers: A list of numbers
-        :param sorted: If the list is sorted or not
+        :param sorted_list: If the list is sorted or not
         :return: The 2nd largest number in the list numbers
         :rtype: float
 
         """
-        if sorted:
-            return numbers[len(numbers)-2:len(numbers)-1][0]
+        if sorted_list:
+            return numbers[len(numbers)-2]
 
         count = 0
         m1 = m2 = float('-inf')
@@ -126,17 +126,17 @@ class Analytics:
         return m2 if count >= 2 else None
 
     @staticmethod
-    def second_smallest(numbers: List[float], sorted: bool = False) -> float:
+    def second_smallest(numbers: List[float], sorted_list: bool = False) -> float:
         """
         Simple function to return the 2nd smallest number in a list of numbers.
 
         :param numbers: A list of numbers
-        :param sorted: If the list is sorted or not
+        :param sorted_list: If the list is sorted or not
         :return: The 2nd smallest number in the list numbers
         :rtype: float
         """
-        if sorted:
-            return numbers[1:2][0]
+        if sorted_list:
+            return numbers[1]
 
         count = 0
         m1 = m2 = float('inf')
@@ -172,7 +172,7 @@ class Analytics:
             A = stochastic_neighbour_matrix
 
         ev = Analytics.get_eigenvalues(A)
-        return Analytics.second_largest(ev).real
+        return Analytics.second_largest(ev, True).real
 
     @staticmethod
     def convergence_rate2(nxg: nx.Graph) -> float:
@@ -186,9 +186,9 @@ class Analytics:
         """
         A = Analytics.get_stochastic_neighbour_matrix(nxg)
         ev = Analytics.get_eigenvalues(A)
-        largest = max(ev)
-        smallest = min(ev)
-        second_largest = Analytics.second_largest(ev)
+        largest = ev[len(ev)-1].real
+        smallest = ev[0].real
+        second_largest = Analytics.second_largest(ev, True).real
         return max(
             largest - abs(second_largest),
             largest - abs(smallest)
@@ -424,7 +424,7 @@ class Analytics:
         :return: Whether it's connected or not.
         """
         ev = Analytics.get_eigenvalues(laplacian_matrix)
-        second_smallest = Analytics.second_smallest(ev).real
+        second_smallest = Analytics.second_smallest(ev, True).real
 
         # Check if it's above a certain threshold due to floating point errors
         return second_smallest > 1e-8
