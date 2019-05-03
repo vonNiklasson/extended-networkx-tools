@@ -7,6 +7,9 @@ import networkx as nx
 import numpy as np
 from numpy import linalg
 
+import numba
+from numba import jit
+
 try:
     from Solver import Solver
 except ImportError:
@@ -290,6 +293,23 @@ class Analytics:
             distributions[eccentricity] += 1
 
         return distributions
+
+    @staticmethod
+    @jit(nopython=True)
+    def is_nodes_connected_cuda(mx: np.ndarray, origin: int, destination: int):
+        size = len(mx)
+        seen = set()
+        q = [origin]
+        while len(q) > 0:
+            start = q.pop()
+            seen.add(start)
+            for i in range(0, size):
+                if mx[start][i] != 0 and i != start and i not in seen:
+                    if i == destination:
+                        return True
+                    elif i not in seen:
+                        q.append(i)
+        return False
 
     @staticmethod
     def is_nodes_connected(nxg: nx.Graph, origin: int, destination: int) -> bool:
