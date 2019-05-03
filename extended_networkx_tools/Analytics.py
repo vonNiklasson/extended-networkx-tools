@@ -133,6 +133,29 @@ class Analytics:
         return m2 if count >= 2 else None
 
     @staticmethod
+    @jit(nopython=True)
+    def second_largest_cuda(numbers: List[float]) -> float:
+        """
+        Simple function to return the 2nd largest number in a list of numbers.
+
+        :param numbers: A list of numbers
+        :return: The 2nd largest number in the list numbers
+        :rtype: float
+
+        """
+
+        count = 0
+        m1 = m2 = -10000
+        for x in numbers:
+            count += 1
+            if x > m2:
+                if x >= m1:
+                    m1, m2 = x, m1
+                else:
+                    m2 = x
+        return m2 if count >= 2 else None
+
+    @staticmethod
     def second_smallest(numbers: List[float], sorted_list: bool = False) -> float:
         """
         Simple function to return the 2nd smallest number in a list of numbers.
@@ -179,10 +202,10 @@ class Analytics:
             A = stochastic_neighbour_matrix
 
         ev = Analytics.get_eigenvalues(A)
-        return Analytics.second_largest(ev).real
+        return Analytics.second_largest_cuda(ev).real
 
     @staticmethod
-    @jit(nopython=True, parallel=True)
+    @jit(nopython=True)
     def convergence_rate_cuda(neighbour_matrix: np.ndarray) -> float:
         stochastic = neighbour_matrix / neighbour_matrix.sum(axis=1)
         eigenvalues = linalg.eigvals(stochastic)
