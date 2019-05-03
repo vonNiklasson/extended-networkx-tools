@@ -12,16 +12,23 @@ class Creator:
     """
 
     @staticmethod
-    def from_random(node_count: int) -> networkx.Graph:
+    def from_random(node_count: int, area_dimension: int = None) -> networkx.Graph:
         """
         Creates an unassigned graph with nodes of random position.
         The work area corresponds to the node count squared.
 
         :rtype: networkx.Graph
         :param node_count: The number of nodes to create a graph from.
+        :param area_dimension: The size of the area to put nodes in. Defaults to the node count.
         :return: An unassigned graph with nodes with random position.
         """
-        area_dimension = node_count
+        if area_dimension is None:
+            area_dimension = node_count
+
+        # If the area is smaller than the node count it won't be able to create a graph.
+        if (area_dimension*area_dimension) < node_count:
+            raise ValueError("area_dimension must be at least the size of sqrt(node_count)")
+
         nxg: networkx.Graph = networkx.Graph()
 
         node_set: Set[str] = set()
