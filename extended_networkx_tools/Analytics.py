@@ -90,15 +90,19 @@ class Analytics:
         return mx
 
     @staticmethod
-    def get_eigenvalues(mx: List[List[float]]) -> np.ndarray:
+    def get_eigenvalues(mx: List[List[float]], symmetrical: bool = False) -> np.ndarray:
         """
         Simple function to retrieve the eigenvalues of a matrix.
 
         :param mx: A matrix made up of nested lists.
+        :param symmetrical: Whether or not the matrix is symmetrical. If tru it can make faster computations.
         :return: List of eigenvalues of the provided matrix.
         :rtype: List[float]
         """
-        return linalg.eigvalsh(mx)
+        if symmetrical:
+            return linalg.eigvalsh(mx)
+        else:
+            return linalg.eigvals(mx)
 
     @staticmethod
     def second_largest(numbers: List[float], sorted_list: bool = False) -> float:
@@ -112,10 +116,7 @@ class Analytics:
 
         """
         if sorted_list:
-            largest = numbers[len(numbers)-1]
-            for i in range(len(numbers)-1, -1, -1):
-                if i < largest - 1e-8:
-                    return i
+            return numbers[len(numbers) - 2].real
 
         count = 0
         m1 = m2 = float('-inf')
@@ -139,10 +140,7 @@ class Analytics:
         :rtype: float
         """
         if sorted_list:
-            smallest = numbers[0]
-            for i in range(0, len(numbers)):
-                if smallest < i + 1e-8:
-                    return i
+            return numbers[1].real
 
         count = 0
         m1 = m2 = float('inf')
@@ -178,7 +176,7 @@ class Analytics:
             A = stochastic_neighbour_matrix
 
         ev = Analytics.get_eigenvalues(A)
-        return Analytics.second_largest(ev, True).real
+        return Analytics.second_largest(ev).real
 
     @staticmethod
     def convergence_rate2(nxg: nx.Graph) -> float:
@@ -192,9 +190,9 @@ class Analytics:
         """
         A = Analytics.get_stochastic_neighbour_matrix(nxg)
         ev = Analytics.get_eigenvalues(A)
-        largest = ev[len(ev)-1].real
-        smallest = ev[0].real
-        second_largest = Analytics.second_largest(ev, True).real
+        largest = max(ev).real
+        smallest = min(ev).real
+        second_largest = Analytics.second_largest(ev).real
         return max(
             largest - abs(second_largest),
             largest - abs(smallest)
@@ -216,7 +214,7 @@ class Analytics:
         for edge in edges:
             if 'weight' in edge[2]:
                 total += edge[2]['weight']
-            
+
         return total
 
     @staticmethod
@@ -376,9 +374,9 @@ class Analytics:
         occurrence = 0
         count = 0
         for d, c in distribution.items():
-            occurrence += d*c
+            occurrence += d * c
             count += c
-        return occurrence/count
+        return occurrence / count
 
     @staticmethod
     def get_degree_matrix(nxg: nx.Graph) -> List[List[int]]:
@@ -429,7 +427,7 @@ class Analytics:
         :param laplacian_matrix: The laplacian matrix, representing the graph.
         :return: Whether it's connected or not.
         """
-        ev = Analytics.get_eigenvalues(laplacian_matrix)
+        ev = Analytics.get_eigenvalues(laplacian_matrix, symmetrical=True)
         second_smallest = Analytics.second_smallest(ev, True).real
 
         # Check if it's above a certain threshold due to floating point errors
