@@ -73,16 +73,16 @@ class Analytics:
         # If we wasn't provided with the adjacency matrix, get it.
         if adjacency_matrix is None:
             # Get the adjacency matrix
-            mx = Analytics.get_adjacency_matrix(nxg, True)
-        else:
-            mx = adjacency_matrix
+            adjacency_matrix = Analytics.get_adjacency_matrix(nxg, True)
+
+        mx = []
 
         # Iterate over each row
-        for row_id, _ in enumerate(mx):
+        for row_id, _ in enumerate(adjacency_matrix):
             # Calculate the sum for each row
-            row_sum = sum(mx[row_id])
+            row_sum = sum(adjacency_matrix[row_id])
             # Divide each node in the row with the sum of the row
-            mx[row_id] = list(map(lambda x: (x / row_sum), mx[row_id]))
+            mx.append(list(map(lambda x: (x / row_sum), adjacency_matrix[row_id])))
 
         # Working solution that might however be worse than the previous solution.
         # mx = list(map(lambda row: list(map(lambda cell: cell / sum(row), row)), mx))
