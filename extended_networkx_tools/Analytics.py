@@ -182,6 +182,23 @@ class Analytics:
         return Analytics.second_largest(ev).real
 
     @staticmethod
+    @jit(nopython=True, parallel=True)
+    def convergence_rate_cuda(neighbour_matrix: np.ndarray) -> float:
+        stochastic = neighbour_matrix / neighbour_matrix.sum(axis=1)
+        eigenvalues = linalg.eigvals(stochastic)
+
+        count = 0
+        m1 = m2 = -10000.0
+        for x in eigenvalues:
+            count += 1
+            if x > m2:
+                if x >= m1:
+                    m1, m2 = x, m1
+                else:
+                    m2 = x
+        return m2 if count >= 2 else None
+
+    @staticmethod
     def convergence_rate2(nxg: nx.Graph) -> float:
         """
         Function to retrieve convergence rate based on an alternate approach.
@@ -304,7 +321,7 @@ class Analytics:
             start = q.pop()
             seen.add(start)
             for i in range(0, size):
-                if mx[start][i] != 0 and i != start and i not in seen:
+                if mx[start, i] != 0 and i != start and i not in seen:
                     if i == destination:
                         return True
                     elif i not in seen:
