@@ -8,7 +8,7 @@ import numpy as np
 from numpy import linalg
 
 import numba
-from numba import jit
+from numba import jit, prange
 
 try:
     from Solver import Solver
@@ -335,7 +335,7 @@ class Analytics:
         return distributions
 
     @staticmethod
-    @jit(nopython=True)
+    @jit(nopython=True, parallel=True)
     def is_nodes_connected_cuda(mx: np.ndarray, origin: int, destination: int):
         size = len(mx)
         seen = set()
@@ -343,8 +343,8 @@ class Analytics:
         while len(q) > 0:
             start = q.pop()
             seen.add(start)
-            for i in range(0, size):
-                if mx[start, i] != 0 and i != start and i not in seen:
+            for i in prange(0, size):
+                if mx[start, i] != 0 and i != start:
                     if i == destination:
                         return True
                     elif i not in seen:
