@@ -335,7 +335,7 @@ class Analytics:
         return distributions
 
     @staticmethod
-    @jit(nopython=True, parallel=True)
+    @jit(nopython=True)
     def is_nodes_connected_cuda(mx: np.ndarray, origin: int, destination: int):
         size = len(mx)
         seen = set()
@@ -343,7 +343,7 @@ class Analytics:
         while len(q) > 0:
             start = q.pop()
             seen.add(start)
-            for i in prange(0, size):
+            for i in range(0, size):
                 if mx[start, i] != 0 and i != start:
                     if i == destination:
                         return True
