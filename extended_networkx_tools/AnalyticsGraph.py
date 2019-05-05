@@ -1,7 +1,5 @@
 from typing import List, Tuple, Union
 
-from scipy.sparse.csr import csr_matrix
-import scipy
 from networkx import nx
 
 try:
@@ -184,7 +182,7 @@ class AnalyticsGraph:
 
         self._convergence_rate_dirty = True
         self._is_connected_dirty = True
-        self._connectivity_nodes = (origin, new_destination)
+        self._connectivity_nodes = (origin, old_destination)
 
         return True
 
