@@ -8,14 +8,7 @@ class Visual:
     """
 
     @staticmethod
-    def draw(nx_graph):
-        """
-        Takes a networkx graph and prints the nodes
-        with given edges in the fixed positions.
-
-        :param nx_graph: The networkx object to show the graph from.
-        :type nx_graph: networkx.Graph
-        """
+    def _draw(nx_graph):
         # Create a dict with fixed positions.
         fixed_positions = {}
 
@@ -30,5 +23,27 @@ class Visual:
         pos = nx.spring_layout(nx_graph, pos=fixed_positions, fixed=fixed_nodes)
         # Draw the graph
         nx.draw_networkx(nx_graph, pos)
-        # Show the graph
+
+    @staticmethod
+    def draw(nx_graph):
+        """
+        Takes a networkx graph and prints the nodes
+        with given edges in the fixed positions.
+
+        :param nx_graph: The networkx object to show the graph from.
+        :type nx_graph: networkx.Graph
+        """
+        Visual._draw(nx_graph)
         plt.show()
+
+    @staticmethod
+    def save(nx_graph, filename):
+        """
+        Takes a networkx graph and save graph
+        with given edges in the fixed positions to a PNG-image.
+
+        :param nx_graph: The networkx object to show the graph from.
+        :type nx_graph: networkx.Graph
+        """
+        Visual._draw(nx_graph)
+        plt.savefig(filename, format='png')
