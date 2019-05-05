@@ -105,7 +105,7 @@ class Analytics:
         if symmetrical:
             return linalg.eigvalsh(mx)
         else:
-            return linalg.eigvals(mx)
+            return np.real(linalg.eigvals(mx))
 
     @staticmethod
     def second_largest(numbers: List[float], sorted_list: bool = False) -> float:
@@ -119,7 +119,7 @@ class Analytics:
 
         """
         if sorted_list:
-            return numbers[len(numbers) - 2].real
+            return numbers[len(numbers) - 2]
 
         count = 0
         m1 = m2 = float('-inf')
@@ -166,7 +166,7 @@ class Analytics:
         :rtype: float
         """
         if sorted_list:
-            return numbers[1].real
+            return numbers[1]
 
         count = 0
         m1 = m2 = float('inf')
@@ -202,13 +202,13 @@ class Analytics:
             A = stochastic_neighbour_matrix
 
         ev = Analytics.get_eigenvalues(A)
-        return Analytics.second_largest_cuda(ev).real
+        return Analytics.second_largest_cuda(ev)
 
     @staticmethod
     @jit(nopython=True)
     def convergence_rate_cuda(neighbour_matrix: np.ndarray) -> float:
         stochastic = neighbour_matrix / neighbour_matrix.sum(axis=1)
-        eigenvalues = linalg.eigvals(stochastic)
+        eigenvalues = np.real(linalg.eigvals(stochastic))
 
         count = 0
         m1 = m2 = -10000.0
@@ -233,9 +233,9 @@ class Analytics:
         """
         A = Analytics.get_stochastic_neighbour_matrix(nxg)
         ev = Analytics.get_eigenvalues(A)
-        largest = max(ev).real
-        smallest = min(ev).real
-        second_largest = Analytics.second_largest(ev).real
+        largest = max(ev)
+        smallest = min(ev)
+        second_largest = Analytics.second_largest(ev)
         return max(
             largest - abs(second_largest),
             largest - abs(smallest)
@@ -488,7 +488,7 @@ class Analytics:
         :return: Whether it's connected or not.
         """
         ev = Analytics.get_eigenvalues(laplacian_matrix, symmetrical=True)
-        second_smallest = Analytics.second_smallest(ev, True).real
+        second_smallest = Analytics.second_smallest(ev, True)
 
         # Check if it's above a certain threshold due to floating point errors
         return second_smallest > 1e-8
