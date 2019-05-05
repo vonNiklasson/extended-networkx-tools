@@ -97,8 +97,8 @@ class AnalyticsGraph:
             if self._connectivity_nodes is None:
                 self._is_connected = nx.is_connected(self._graph)
             else:
-                self._is_connected = Analytics.is_nodes_connected(
-                    nxg=self._graph,
+                self._is_connected = Analytics.is_nodes_connected_cuda(
+                    mx=nx.to_numpy_matrix(self.graph(), weight=None),
                     origin=self._connectivity_nodes[0],
                     destination=self._connectivity_nodes[1]
                 )

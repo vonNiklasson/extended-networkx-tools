@@ -7,6 +7,9 @@ import networkx as nx
 import numpy as np
 from numpy import linalg
 
+import numba
+from numba import jit, prange
+
 try:
     from Solver import Solver
 except ImportError:
@@ -102,7 +105,7 @@ class Analytics:
         if symmetrical:
             return linalg.eigvalsh(mx)
         else:
-            return linalg.eigvals(mx)
+            return np.real(linalg.eigvals(mx))
 
     @staticmethod
     def second_largest(numbers: List[float], sorted_list: bool = False) -> float:
@@ -116,10 +119,33 @@ class Analytics:
 
         """
         if sorted_list:
-            return numbers[len(numbers) - 2].real
+            return numbers[len(numbers) - 2]
 
         count = 0
         m1 = m2 = float('-inf')
+        for x in numbers:
+            count += 1
+            if x > m2:
+                if x >= m1:
+                    m1, m2 = x, m1
+                else:
+                    m2 = x
+        return m2 if count >= 2 else None
+
+    @staticmethod
+    @jit(nopython=True)
+    def second_largest_cuda(numbers: List[float]) -> float:
+        """
+        Simple function to return the 2nd largest number in a list of numbers.
+
+        :param numbers: A list of numbers
+        :return: The 2nd largest number in the list numbers
+        :rtype: float
+
+        """
+
+        count = 0
+        m1 = m2 = -10000
         for x in numbers:
             count += 1
             if x > m2:
@@ -140,7 +166,7 @@ class Analytics:
         :rtype: float
         """
         if sorted_list:
-            return numbers[1].real
+            return numbers[1]
 
         count = 0
         m1 = m2 = float('inf')
@@ -176,7 +202,24 @@ class Analytics:
             A = stochastic_neighbour_matrix
 
         ev = Analytics.get_eigenvalues(A)
-        return Analytics.second_largest(ev).real
+        return Analytics.second_largest_cuda(ev)
+
+    @staticmethod
+    @jit(nopython=True)
+    def convergence_rate_cuda(neighbour_matrix: np.ndarray) -> float:
+        stochastic = neighbour_matrix / neighbour_matrix.sum(axis=1)
+        eigenvalues = np.real(linalg.eigvals(stochastic))
+
+        count = 0
+        m1 = m2 = -10000.0
+        for x in eigenvalues:
+            count += 1
+            if x > m2:
+                if x >= m1:
+                    m1, m2 = x, m1
+                else:
+                    m2 = x
+        return m2 if count >= 2 else None
 
     @staticmethod
     def convergence_rate2(nxg: nx.Graph) -> float:
@@ -190,9 +233,9 @@ class Analytics:
         """
         A = Analytics.get_stochastic_neighbour_matrix(nxg)
         ev = Analytics.get_eigenvalues(A)
-        largest = max(ev).real
-        smallest = min(ev).real
-        second_largest = Analytics.second_largest(ev).real
+        largest = max(ev)
+        smallest = min(ev)
+        second_largest = Analytics.second_largest(ev)
         return max(
             largest - abs(second_largest),
             largest - abs(smallest)
@@ -290,6 +333,23 @@ class Analytics:
             distributions[eccentricity] += 1
 
         return distributions
+
+    @staticmethod
+    @jit(nopython=True)
+    def is_nodes_connected_cuda(mx: np.ndarray, origin: int, destination: int):
+        size = len(mx)
+        seen = set()
+        q = [origin]
+        while len(q) > 0:
+            start = q.pop()
+            seen.add(start)
+            for i in range(0, size):
+                if mx[start, i] != 0 and i != start:
+                    if i == destination:
+                        return True
+                    elif i not in seen:
+                        q.append(i)
+        return False
 
     @staticmethod
     def is_nodes_connected(nxg: nx.Graph, origin: int, destination: int) -> bool:
@@ -428,7 +488,7 @@ class Analytics:
         :return: Whether it's connected or not.
         """
         ev = Analytics.get_eigenvalues(laplacian_matrix, symmetrical=True)
-        second_smallest = Analytics.second_smallest(ev, True).real
+        second_smallest = Analytics.second_smallest(ev, True)
 
         # Check if it's above a certain threshold due to floating point errors
         return second_smallest > 1e-8
