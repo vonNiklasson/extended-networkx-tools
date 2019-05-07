@@ -38,8 +38,8 @@ class Creator:
             coord_y = None
             # Keep finding new coordinates until a new one is found
             while coord_x is None or coord_y is None or str((coord_x, coord_y)) in node_set:
-                coord_x = randint(0, area_dimension)
-                coord_y = randint(0, area_dimension)
+                coord_x = randint(0, area_dimension-1)
+                coord_y = randint(0, area_dimension-1)
             nxg.add_node(node_id, x=coord_x, y=coord_y)
             node_set.add(str((coord_x, coord_y)))
 
