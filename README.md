@@ -67,7 +67,7 @@ g = Solver.path(g)
 # Convert the graph to an AnalytcsGraph object
 ag = AnalyticsGraph(g)
 
-convergence_rate = ag.get_convergence_rate() # Calcualtes the convergence rate from scratch
+convergence_rate = ag.get_convergence_rate() # Calculates the convergence rate from scratch
 ag.remove_edge(4, 5)    # Removes an edge
 ag.revert()             # Revert the changes
 convergence_rate = ag.get_convergence_rate() # Doesn't calculate it since it's saved from previous state
