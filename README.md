@@ -17,7 +17,7 @@ pip install extended-networkx-tools
 
 ## The package
 
-Currently the package contains 3 main modules, `Creator`, `Analytics` and `Visual`.
+Currently the package contains 3 main modules, `Creator`, `Analytics`, `Solver`, `Visual` and `AnalyticsGraph`.
 
 ### Creator
 
@@ -32,7 +32,7 @@ as convergence rate, neighbour matrix, its eigenvalues.
 
 ### Solver
 
-Used to find simple greedy solutions to a connected graph taken from graph theory. The current approaches are:
+Creates greedy solutions to a connected graph taken from graph theory. The current approaches are:
 
 - ``path``: Adds edges as a path from the start to end node
 - ``cycle``: Adds edges just like the path, but also one edge from the start to end node.
