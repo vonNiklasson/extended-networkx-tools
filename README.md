@@ -68,9 +68,15 @@ g = Solver.path(g)
 ag = AnalyticsGraph(g)
 
 convergence_rate = ag.get_convergence_rate() # Calculates the convergence rate from scratch
-ag.remove_edge(4, 5)    # Removes an edge
-ag.revert()             # Revert the changes
+ag.remove_edge(4, 5)                         # Removes an edge
+ag.revert()                                  # Revert the changes
 convergence_rate = ag.get_convergence_rate() # Doesn't calculate it since it's saved from previous state
+
+ag.is_connected()  # Yields True. Uses BFS to check if the graph is connected into one component.
+ag.add_edge(1, 4)  # Adds a random edge between 2 nodes
+ag.is_connected()  # Immediately returns True, as the connectivity isn't affected by 
+                   # adding an edge if it already was True before adding it.
+
 ```
 
 ## Usage
